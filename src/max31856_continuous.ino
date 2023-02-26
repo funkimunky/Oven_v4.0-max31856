@@ -45,14 +45,17 @@ void setup() {
 void loop() {
   // The DRDY output goes low when a new conversion result is available
   int count = 0;
-  Serial.println(digitalRead(DRDY_PIN));
+  Serial.println(maxthermo.readThermocoupleTemperature());
+  // Serial.println(digitalRead(DRDY_PIN));
   
   while (digitalRead(DRDY_PIN)) {
-    Serial.println(count);
     if (count++ > 200) {
       count = 0;
+      
       Serial.print(".");
     }
+    
   }
-  Serial.println(maxthermo.readThermocoupleTemperature());
+  // Serial.println("low");
+  // Serial.println(maxthermo.readThermocoupleTemperature());
 }
