@@ -1,0 +1,23 @@
+oven board
+//MAX31865 VARIABLES
+// Use software SPI: CS, DI, DO, CLK
+Adafruit_MAX31865 thermo = Adafruit_MAX31865(39, 38, 41, 40);
+
+
+// Use software SPI: CS, DI, DO, CLK
+//Adafruit_MAX31856 maxthermo = Adafruit_MAX31856(53, 50, 51, 52);
+
+SPI: 
+CS, 39
+DI, 38
+DO, 41
+CLK 40
+
+GREY 	VIN		5V
+PURPLE 	GND		GND
+BLUE	SCK		52	
+GREEN	SDO		50
+YELLOW	SDI		51
+ORANGE	CS		53
+RED		FLT		
+BROWN	DRDY	5
