@@ -30,41 +30,29 @@
 #define MAX31856_CR0_FAULT 0x04       ///< Config 0 fault mode flag
 #define MAX31856_CR0_FAULTCLR 0x02    ///< Config 0 fault clear flag
 
-#define MAX31856_CR1_REG 0x01  ///< Config 1 register
-#define MAX31856_MASK_REG 0x02 ///< Fault Mask register
-#define MAX31856_CJHF_REG 0x03 ///< Cold junction High temp fault register
-#define MAX31856_CJLF_REG 0x04 ///< Cold junction Low temp fault register
-#define MAX31856_LTHFTH_REG                                                    \
-  0x05 ///< Linearized Temperature High Fault Threshold Register, MSB
-#define MAX31856_LTHFTL_REG                                                    \
-  0x06 ///< Linearized Temperature High Fault Threshold Register, LSB
-#define MAX31856_LTLFTH_REG                                                    \
-  0x07 ///< Linearized Temperature Low Fault Threshold Register, MSB
-#define MAX31856_LTLFTL_REG                                                    \
-  0x08 ///< Linearized Temperature Low Fault Threshold Register, LSB
-#define MAX31856_CJTO_REG 0x09  ///< Cold-Junction Temperature Offset Register
-#define MAX31856_CJTH_REG 0x0A  ///< Cold-Junction Temperature Register, MSB
-#define MAX31856_CJTL_REG 0x0B  ///< Cold-Junction Temperature Register, LSB
-#define MAX31856_LTCBH_REG 0x0C ///< Linearized TC Temperature, Byte 2 DRDY P4 datasheet Address 01h or 02h Decoded to DRDY High
-#define MAX31856_LTCBM_REG 0x0D ///< Linearized TC Temperature, Byte 1 DRDY P4 datasheet Address 01h or 02h Decoded to DRDY High
-#define MAX31856_LTCBL_REG 0x0E ///< Linearized TC Temperature, Byte 0 DRDY P4 datasheet Address 01h or 02h Decoded to DRDY High
-#define MAX31856_SR_REG 0x0F    ///< Fault Status Register
-
-#define MAX31856_FAULT_CJRANGE                                                 \
-  0x80 ///< Fault status Cold Junction Out-of-Range flag
-#define MAX31856_FAULT_TCRANGE                                                 \
-  0x40 ///< Fault status Thermocouple Out-of-Range flag
-#define MAX31856_FAULT_CJHIGH                                                  \
-  0x20 ///< Fault status Cold-Junction High Fault flag
-#define MAX31856_FAULT_CJLOW 0x10 ///< Fault status Cold-Junction Low Fault flag
-#define MAX31856_FAULT_TCHIGH                                                  \
-  0x08 ///< Fault status Thermocouple Temperature High Fault flag
-#define MAX31856_FAULT_TCLOW                                                   \
-  0x04 ///< Fault status Thermocouple Temperature Low Fault flag
-#define MAX31856_FAULT_OVUV                                                    \
-  0x02 ///< Fault status Overvoltage or Undervoltage Input Fault flag
-#define MAX31856_FAULT_OPEN                                                    \
-  0x01 ///< Fault status Thermocouple Open-Circuit Fault flag
+#define MAX31856_CR1_REG 0x01         ///< Config 1 register
+#define MAX31856_MASK_REG 0x02        ///< Fault Mask register
+#define MAX31856_CJHF_REG 0x03        ///< Cold junction High temp fault register
+#define MAX31856_CJLF_REG 0x04        ///< Cold junction Low temp fault register
+#define MAX31856_LTHFTH_REG 0x05      ///< Linearized Temperature High Fault Threshold Register, MSB
+#define MAX31856_LTHFTL_REG 0x06      ///< Linearized Temperature High Fault Threshold Register, LSB
+#define MAX31856_LTLFTH_REG 0x07      ///< Linearized Temperature Low Fault Threshold Register, MSB
+#define MAX31856_LTLFTL_REG 0x08      ///< Linearized Temperature Low Fault Threshold Register, LSB
+#define MAX31856_CJTO_REG 0x09        ///< Cold-Junction Temperature Offset Register
+#define MAX31856_CJTH_REG 0x0A        ///< Cold-Junction Temperature Register, MSB
+#define MAX31856_CJTL_REG 0x0B        ///< Cold-Junction Temperature Register, LSB
+#define MAX31856_LTCBH_REG 0x0C       ///< Linearized TC Temperature, Byte 2 DRDY P4 datasheet Address 01h or 02h Decoded to DRDY High
+#define MAX31856_LTCBM_REG 0x0D       ///< Linearized TC Temperature, Byte 1 DRDY P4 datasheet Address 01h or 02h Decoded to DRDY High
+#define MAX31856_LTCBL_REG 0x0E       ///< Linearized TC Temperature, Byte 0 DRDY P4 datasheet Address 01h or 02h Decoded to DRDY High
+#define MAX31856_SR_REG 0x0F          ///< Fault Status Register
+#define MAX31856_FAULT_CJRANGE 0x80   ///< Fault status Cold Junction Out-of-Range flag
+#define MAX31856_FAULT_TCRANGE 0x40   ///< Fault status Thermocouple Out-of-Range flag
+#define MAX31856_FAULT_CJHIGH 0x20    ///< Fault status Cold-Junction High Fault flag
+#define MAX31856_FAULT_CJLOW 0x10     ///< Fault status Cold-Junction Low Fault flag
+#define MAX31856_FAULT_TCHIGH 0x08    ///< Fault status Thermocouple Temperature High Fault flag
+#define MAX31856_FAULT_TCLOW  0x04    ///< Fault status Thermocouple Temperature Low Fault flag
+#define MAX31856_FAULT_OVUV 0x02      ///< Fault status Overvoltage or Undervoltage Input Fault flag
+#define MAX31856_FAULT_OPEN 0x01      ///< Fault status Thermocouple Open-Circuit Fault flag
 
 /** Noise filtering options enum. Use with setNoiseFilter() */
 typedef enum {

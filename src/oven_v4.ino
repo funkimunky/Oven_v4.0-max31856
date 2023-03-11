@@ -93,40 +93,38 @@ int DOOROPEN_PIN = 37;
 //SCR Pin
 int SCR_PIN = 36;
 
-
-
 void setup() {
-  Serial.begin(115200);
-  while (!Serial) delay(10);
-  Serial.println("MAX31856 thermocouple test");
+    Serial.begin(115200);
+    while (!Serial) delay(10);
+    Serial.println("MAX31856 thermocouple test");
 
-  pinMode(DRDY_PIN, INPUT);
+    pinMode(DRDY_PIN, INPUT);
 
-  if (!maxthermo.begin()) {
-    Serial.println("Could not initialize thermocouple.");
-    while (1) delay(10);
-  }
+    if (!maxthermo.begin()) {
+        Serial.println("Could not initialize thermocouple.");
+        while (1) delay(10);
+    }
 
-  maxthermo.setThermocoupleType(MAX31856_TCTYPE_K);
+    maxthermo.setThermocoupleType(MAX31856_TCTYPE_K);
 
-  Serial.print("Thermocouple type: ");
-  switch (maxthermo.getThermocoupleType() ) {
-    case MAX31856_TCTYPE_B: Serial.println("B Type"); break;
-    case MAX31856_TCTYPE_E: Serial.println("E Type"); break;
-    case MAX31856_TCTYPE_J: Serial.println("J Type"); break;
-    case MAX31856_TCTYPE_K: Serial.println("K Type"); break;
-    case MAX31856_TCTYPE_N: Serial.println("N Type"); break;
-    case MAX31856_TCTYPE_R: Serial.println("R Type"); break;
-    case MAX31856_TCTYPE_S: Serial.println("S Type"); break;
-    case MAX31856_TCTYPE_T: Serial.println("T Type"); break;
-    case MAX31856_VMODE_G8: Serial.println("Voltage x8 Gain mode"); break;
-    case MAX31856_VMODE_G32: Serial.println("Voltage x8 Gain mode"); break;
-    default: Serial.println("Unknown"); break;
-  }
+    Serial.print("Thermocouple type: ");
+    switch (maxthermo.getThermocoupleType() ) {
+        case MAX31856_TCTYPE_B: Serial.println("B Type"); break;
+        case MAX31856_TCTYPE_E: Serial.println("E Type"); break;
+        case MAX31856_TCTYPE_J: Serial.println("J Type"); break;
+        case MAX31856_TCTYPE_K: Serial.println("K Type"); break;
+        case MAX31856_TCTYPE_N: Serial.println("N Type"); break;
+        case MAX31856_TCTYPE_R: Serial.println("R Type"); break;
+        case MAX31856_TCTYPE_S: Serial.println("S Type"); break;
+        case MAX31856_TCTYPE_T: Serial.println("T Type"); break;
+        case MAX31856_VMODE_G8: Serial.println("Voltage x8 Gain mode"); break;
+        case MAX31856_VMODE_G32: Serial.println("Voltage x8 Gain mode"); break;
+        default: Serial.println("Unknown"); break;
+    }
 
-  maxthermo.setConversionMode(MAX31856_CONTINUOUS);
+    maxthermo.setConversionMode(MAX31856_CONTINUOUS);
 
-   //set sample sample time to match temperature check
+    //set sample sample time to match temperature check
     myPID.SetSampleTime(sampleTime);
     //tell the PID to range between 0 and the full window size
     myPID.SetOutputLimits(0, WindowSize);
@@ -192,75 +190,61 @@ void setup() {
     lcdClearStartMillis = millis();
 }
 
-void loop() {
-  // The DRDY output goes low when a new conversion result is available
-  int count = 0;
-  currentTemperature = maxthermo.readThermocoupleTemperature()
+void loop()
+{
+    int count = 0;
 
-  // Serial.println(maxthermo.readThermocoupleTemperature());
-  
+    currentTemperature = maxthermo.readThermocoupleTemperature();
+    printTemp();
+    // The DRDY output goes low when a new conversion result is available
+    while (digitalRead(DRDY_PIN))
+    {
+        checkSafetyTemp();
+        backlightCheck();
 
-  printTemp();
-
-  // Serial.println(digitalRead(DRDY_PIN));
-  
-  while (digitalRead(DRDY_PIN)) {
-    if (count++ > 200) {
-      count = 0;
-      
-      Serial.print(".");
-    }
-
-    // need to refactor to use temperature previously read when DRDY pin is true
-    
-    checkSafetyTemp();
-    backlightCheck();
-
-    if (isError) {
-        digitalWrite(SCR_PIN, LOW);
-        Serial.println("ERROR");
-    }
-    else {
-        ReadControls();
-        if (ovenProg == FAN_OVEN) {
-			//Serial.println("OvenProg = FAN_OVEN");
-            backlightAuto = false;
-            backLightON();
-			      startWindowTimer();
-            if (DOOR_OPEN) {
-                switchLightOn();
-                digitalWrite(SCR_PIN, LOW);
-                relayOff(RELAYSAFETY_PIN);
-                relayOff(ELEMENTFAN_PIN);
-                Input = 0;
-                Output = 0;
-				timerStarted = false;
-            }
-            else {
-                switchLightOn();
-                relayOn(RELAYSAFETY_PIN);
-                relayOn(ELEMENTFAN_PIN);
-                processPID();
-            }
-
-        }
-        else {
-            backlightOFF();
-            backlightAuto = true;
+        if (isError)
+        {
             digitalWrite(SCR_PIN, LOW);
-            relayOff(RELAYSAFETY_PIN);
-            relayOff(ELEMENTFAN_PIN);
-            switchLightOff();
-			timerStarted = false;
+            Serial.println("ERROR");
+        }
+        else
+        {
+            ReadControls();
+            if (ovenProg == FAN_OVEN)
+            {
+                backlightAuto = false;
+                backLightON();
+                startWindowTimer();
+                switchLightOn();
+                if (DOOR_OPEN)
+                {                    
+                    digitalWrite(SCR_PIN, LOW);
+                    // relayOff(RELAYSAFETY_PIN);
+                    relayOff(ELEMENTFAN_PIN);
+                    Input = 0;
+                    Output = 0;
+                    timerStarted = false;
+                }
+                else
+                {                    
+                    // relayOn(RELAYSAFETY_PIN);
+                    relayOn(ELEMENTFAN_PIN);
+                    processPID();
+                }
+            }
+            else
+            {
+                switchLightOff();
+                backlightOFF();
+                backlightAuto = true;
+                digitalWrite(SCR_PIN, LOW);
+                // relayOff(RELAYSAFETY_PIN);
+                relayOff(ELEMENTFAN_PIN);                
+                timerStarted = false;
+            }
         }
     }
-    
-  }
-  // Serial.println("low");
-  // Serial.println(maxthermo.readThermocoupleTemperature());
 }
-
-
 
 void startWindowTimer(){
 	if(!timerStarted){
@@ -298,23 +282,16 @@ void backlightOFF() {
 }
 
 void switchLightOn() {
-    if (lightsOn) {
-        return;
-    }
-    else {
+    if (!lightsOn) {
         lightsOn = true;
         relayOn(LIGHTS_PIN);
     }
 }
 
 void switchLightOff() {
-    if (lightsOn && ovenProg != FAN_OVEN) {
+    if (lightsOn) {
         lightsOn = false;
         relayOff(LIGHTS_PIN);
-        return;
-    }
-    else {
-        return;
     }
 }
 
@@ -343,17 +320,10 @@ Read all the control knobs to evaluate state.
 */
 void ReadControls() {
     currentMillis = millis();  //get the current "time" (actually the number of milliseconds since the program started)
-    // float temp = 0;
 
     if (currentMillis - controlsStartMillis >= controlsDelay)  //test whether the period has elapsed
     {
 
-		//if (currentMillis - lcdClearStartMillis >= lcdClearDelay)  //test whether the period has elapsed
-		//{
-			//lcd.clear();
-			//lcdClearStartMillis = currentMillis;
-		//}
-		
         readPotentionmeterTemp(analogRead(TEMPCONTROL_PIN));
 
         readPotentiometerProg(analogRead(OVENPROG_PIN));
@@ -433,34 +403,15 @@ void processPID()
         windowStartTime += WindowSize;
     }
 
-	// Serial.print("Output");
-	// Serial.print("\t");
-	// Serial.print(Output);
-	// Serial.print("\t");
-	
-	// Serial.print("windowStartTime");
-	// Serial.print("\t");
-	// Serial.print(windowStartTime);
-	// Serial.print("\t");	
 	
 	unsigned long timeTest = millis() - windowStartTime;
 	
-	// Serial.print("millis - windowStartTime");
-	// Serial.print("\t");
-	// Serial.print(timeTest);
-	// Serial.print("\t");
-	
     if (Output <= timeTest)
-    {
-		// Serial.print("ProcessPID LOW");
-		// Serial.print("\n");
-		
+    {		
         digitalWrite(SCR_PIN, LOW);
     }
     else
     {
-		// Serial.print("ProcessPID HIGH");
-		// Serial.print("\n");
 	    digitalWrite(SCR_PIN, HIGH);
     }
 }
@@ -471,60 +422,17 @@ void printTemp() {
         lcd.setCursor(11, 0);
         lcd.print(Line1Col2Buf);
 
-    //DEBUG     
-    // sprintf (buf, "RTDTEMP is %3d \r\n", thermo.readRTD());
-    // Serial.print (buf);
+        // Check and print any faults
+        uint8_t fault = maxthermo.readFault();
+        if (fault)
+        {
+            // printFault(fault, maxthermo);
+            Serial.println("fault");
+            return;
+        }
 
-    // currentMillis = millis();  //get the current "time" (actually the number of milliseconds since the program started)
-	
-    // if (currentMillis - startMillis >= sampleTime)  //test whether the period has elapsed
-    // {
-    //     //Serial.println("temp checked");
-		// startMillis = currentMillis;  //IMPORTANT to save the start time of the current LED state.
-    //     // Check and print any faults
-    //     uint8_t fault = thermo.readFault();
-    //     if (fault)
-    //     {
-    //         printFault(fault, thermo);
-    //         return;
-    //     }
-    //     currentTemperature = thermo.temperature(RNOMINAL, RREF);
-    //     sprintf(Line1Col2Buf, "a:%03d", currentTemperature);
-    //     lcd.setCursor(11, 0);
-    //     lcd.print(Line1Col2Buf);
     // }
 }
-
-void printFault(uint8_t  fault, Adafruit_MAX31865 thermo) {
-    Serial.print("Fault 0x");
-    Serial.println(fault, HEX);
-    if (fault & MAX31865_FAULT_HIGHTHRESH) {
-        Serial.println("RTD High Threshold");
-        isError = true;
-    }
-    if (fault & MAX31865_FAULT_LOWTHRESH) {
-        Serial.println("RTD Low Threshold");
-        isError = true;
-    }
-    if (fault & MAX31865_FAULT_REFINLOW) {
-        Serial.println("REFIN- > 0.85 x Bias");
-        isError = true;
-    }
-    if (fault & MAX31865_FAULT_REFINHIGH) {
-        Serial.println("REFIN- < 0.85 x Bias - FORCE- open");
-        isError = true;
-    }
-    if (fault & MAX31865_FAULT_RTDINLOW) {
-        Serial.println("RTDIN- < 0.85 x Bias - FORCE- open");
-        isError = true;
-    }
-    if (fault & MAX31865_FAULT_OVUV) {
-        Serial.println("Under/Over voltage");
-    }
-    thermo.clearFault();
-    Serial.println();
-}
-
 
 void relayOn(int pin) {
     digitalWrite(pin, LOW);
