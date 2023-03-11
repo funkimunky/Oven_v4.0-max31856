@@ -162,7 +162,7 @@ void setup() {
     backLightON();
 
     lcd.setCursor(0, 0);
-    lcd.print("DAVEOVEN V3");
+    lcd.print("DAVEOVEN V4");
     delay(2000);
     lcd.clear();
 
